@@ -1,0 +1,255 @@
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <?php
+session_start();
+// if ($_SESSION['username']=="esme admin")  // auth
+             {    // auth
+//---------------- option ------------------
+$show_php_codes="yes"; // cjphange to no if you dont like
+$filename="shiraz_file_manager.php";// ham esme file bayad bashad
+ //------------------------------------------
+ // variables of program:
+
+?>
+
+<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="rtl">
+<head>
+<title>Iran file manger</title>
+
+<style>
+<?php
+include"iran_manager/my_css.php";
+?>                                                     
+</style>
+</head>
+<body>
+       <?php
+  
+     ?>
+ <div id='page'>
+
+<?php
+echo"<div id='header_print'>"; 
+  echo"<h3><a href='index.php'>website</a></h3>"; // link be site
+echo"</div>";  
+//echo"<br>--------------II------------------<br>";
+        $my_loci=$_SERVER['SERVER_NAME'];
+     // echo"<br>server name= ".$my_loci;
+//echo"<br>--------------IIOO-----------------<br>";
+
+
+$my_dir="./";
+include"iran_manager/engine1.php";
+
+// ======= action s ==============
+//================================
+ if(isset($_POST['action_save']))  
+ {// if action
+include"iran_manager/action_save.php";
+ }  // action
+if(isset($_POST['action_upload']))  
+{
+include"iran_manager/action_upload.php";
+}  //  upload
+
+if(isset($_POST['action_rename']))  
+ {// if action_rename
+include"iran_manager/action_rename.php";
+ }  // action
+if(isset($_POST['action_delete']))  
+ {// if action_delete
+include"iran_manager/action_delete.php";
+ }  // action
+// ==============================
+//===============================
+$scan = scandir($my_dir);
+
+// khate badi sahih , print_r , chaap hameye etel!aat
+//print_r($scan);
+echo"<div id='root_print'>"; 
+ echo "<a href='$filename?folder=empty'><img src='http://saalek110.is-great.net/images/buttons/root.png' width='180' height='auto'></a>";
+
+echo"</div>";  
+
+echo"<table border=1>"; echo"<tr>";
+
+
+echo"<td>";
+$my_folder="Root";
+echo"<div id='forum_name'>";  
+if ($_SESSION['step1'] !="empty" )
+{
+$my_folder=$_SESSION['step1'];
+
+if ($_SESSION['step2'] !="empty" )
+$my_folder=$my_folder."/".$_SESSION['step2'];
+if ($_SESSION['step3'] !="empty" )
+$my_folder=$my_folder."/".$_SESSION['step3'];
+if ($_SESSION['step4'] !="empty" )
+$my_folder=$my_folder."/".$_SESSION['step4'];
+}
+echo $my_folder;
+echo"</div>";  
+echo"<div id='folders_list'>";  
+foreach ($scan as $f) 
+    {
+$pattern = '/^[a-z0-9_-]{1,40}$/'; // folders
+$check = preg_match($pattern,$f);
+if ($check)  
+{
+ echo "<a href='$filename?folder=$f'>".$f."</a>";
+        echo"<br>";
+}
+    }// foreach
+echo"</div>";  
+
+// ------------- php ----------------------------------
+ foreach ($scan as $f) 
+ {
+$check = preg_match('/([a-z]+[0-9]*)\.php$/', $f, $match);
+ if ($check)  {   
+     //echo $f;
+      $masir=$my_dir."/".$f;
+     // echo "<br>".$masir;
+echo"<br>";
+ echo "<a href='$filename?masir=$masir&dir=$my_dir&filename=$f'>".$f."</a>";
+echo"<br>";
+ }    // if check
+      } // foreach php
+ //------------------- /php ------------------------
+//--------------------jpg --------------------------
+foreach ($scan as $f) 
+     {
+$check = preg_match('/([a-z]+[0-9]*)\.jpe?g$/', $f, $match);
+ if ($check)  {   
+     echo $f;    $masir=$my_dir."/".$f;  show_image($masir);
+  }    } // foreach
+ echo"</td>";
+ echo"</tr>";
+foreach ($scan as $f) 
+     {
+$check = preg_match('/([a-z]+[0-9]*)\.png$/', $f, $match);
+ if ($check)  {   
+     echo $f;    $masir=$my_dir."/".$f;  show_image($masir);
+  }    } // foreach
+foreach ($scan as $f)
+{
+$check = preg_match('/([a-z]+[0-9]*)\.gif$/', $f, $match);
+if ($check)  {   
+     echo $f;    $masir=$my_dir."/".$f;  show_image($masir);
+}    } // foreach
+//------------------------ editor ------------------------
+  echo"<tr>";echo"<td>";
+ echo"<img src='http://saalek110.is-great.net/images/buttons/editor.jpg'  style='width:500px;height:60px;'>";
+//---------------------------------------------------------------------------
+  echo"<br>";
+if (    isset($_GET['masir'])    &&  isset($_GET['dir'])         &&  isset($_GET['filename'])      )
+{
+$masir=$_GET['masir'];
+$dir=$_GET['dir'];
+$my_filename=$_GET['filename'];
+
+echo "masir= ".$masir;
+echo"<br>";
+
+
+$myfile = fopen("$masir", "r") or die("Unable to open file!");
+$contents = fread($myfile, filesize($masir));//read file  
+fclose($myfile);
+?>
+<center>
+
+
+
+<form id='myform' action="<?php echo $_SERVER['PHP_SELF']; ?>"  method = 'POST'>
+
+
+
+    <textarea id="mytextarea"  form="myform" name="post_text" rows="30" cols="20">
+        <?php  echo  htmlspecialchars($contents);  ?>
+             </textarea><br><br>
+     <?php
+     echo'<input type="hidden" id="custId" name="masir"  value='.$masir.'>';
+     echo'<input type="hidden" id="custId" name="dir"  value='.$dir.'>';
+     echo'<input type="hidden" id="custId" name="filename"  value='.$my_filename.'>';
+
+     ?>
+              <input type="submit"  name='action_save' form='myform' value="Submit"  style=" font-size:40px; height:90px; width:150px">   </center>                                                  
+              <?php
+
+
+}  // see file
+echo"</td>";
+echo"</tr>";
+echo"<tr>";
+echo"<td>";
+//--------------upload###########
+include"iran_manager/form_upload.php";
+//-------------------############
+echo"</td>";  echo"</tr>";
+
+echo"<tr>";  echo"<td>";
+echo"<table border=1><tr>";
+echo"<td>";
+
+echo"rename";
+ echo "<a href='http://saalek110.is-great.net/forum/index.php'><img src='http://saalek110.is-great.net/images/griffin.jpg' alt='griffin' width='70' height='auto'></a>";
+ echo"delete";
+echo"</td>";
+echo"<td>";
+if (    isset($_GET['masir'])    &&  isset($_GET['dir'])         &&  isset($_GET['filename'])      )
+{
+//--------------delete###########
+include"iran_manager/form_delete.php";
+//-------------------############
+}     // delete
+echo"</td>";
+echo"<td>";
+if (    isset($_GET['masir'])    &&  isset($_GET['dir'])         &&  isset($_GET['filename'])      )
+{
+//--------------rename###########
+include"iran_manager/form_rename.php";
+//-------------------############
+             
+}  // rename
+echo"</td>";
+echo"<td>";
+echo"<p style='color:red'>♤♧</p>";
+echo"<br>";
+echo"<p style='color:red'>♡◇</p>";
+echo"</td>";
+echo"</tr>";echo"</table>";
+
+echo"</td>";  echo"</tr>";
+echo"</table>";
+
+
+//-------------- image function --------------------
+function show_image($masir) 
+{
+         echo"<br>";  
+            $my_loci=$_SERVER['SERVER_NAME'];
+            $dir="http://".$my_loci.$masir;
+            echo $dir;
+     echo "<a href=$dir><img src=$dir alt='c1.jpg' width='190' height=auto></a>";
+    echo"<br>";
+      }   // function
+//--------- /image function --------------------------
+
+       }   // auth
+   ?>  
+        
+   
+      <br><br><br><br><br><br><br>
+      <br><br><br><br><br><br><br>
+     <br><br><br><br><br>
+
+      </div>
+</center>
+ 
+   
+   
+
+</div>
+</body>
+</html>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
