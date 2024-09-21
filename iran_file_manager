@@ -4,7 +4,7 @@ session_start();
              {    // auth
 //---------------- option ------------------
 $show_php_codes="yes"; // cjphange to no if you dont like
-$filename="shiraz_file_manager.php";// ham esme file bayad bashad
+$filename="iran_file_manager.php";// ham esme file bayad bashad
  //------------------------------------------
  // variables of program:
 
